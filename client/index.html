@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" ng-app>
+  <head>
+    <title>DanceFire</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/fire-0.62.min.js"></script>
+    <style>
+    #fire{width:320px;height:240px;}
+    body{background-color:black;}
+    </style>
+    <script>
+      $(document).ready( function(){
+		$('#fire').fire({
+			speed:20,
+			maxPow:8,
+			maxPowZone:"center",
+			gravity:0,
+			flameWidth:3,
+			flameHeight:2,
+			fireTransparency:10,
+			fadingFlameSpeed:8,
+			plasm:false,
+		});	
+		var socket = io.connect('https://dancefire-c9-lazaro_clapp.c9.io/');
+        socket.on('force', function (data) {
+            console.log(data);
+            var speedForce = Math.round(20*data);
+            if(speedForce > 200) speedForce = 200;
+            var fadingForce = 20 - Math.round(2*data);
+            if(fadingForce < 0) fadingForce = 0;
+            $('#fire').fire('change',{speed:speedForce,fadingFlameSpeed:fadingForce});
+        });
+	});
+    </script>
+  </head>
+  <body>
+  <div id="fire"></div>
+  </body>
+</html>
